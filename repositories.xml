@@ -1,0 +1,11 @@
+<repositories encoding="unicode" version="1.1">
+  <repo priority="50" quality="experimental">
+    <name>smellyfis</name>
+    <description>collection of programs that make my life easier</description>
+    <owner>
+      <email>dylan.thies@gmail.com</email>
+      <name>Dylan "smellyfis" Thies</name>
+    </owner>
+    <source type="git">https://github.com/smellyfis/smellyfis_overlay.git</source>
+  </repo>
+</repositories>
