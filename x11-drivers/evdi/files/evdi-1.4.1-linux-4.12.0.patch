@@ -1,0 +1,273 @@
+diff --git a/.travis.yml b/.travis.yml
+index b02f3da..a129523 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -1,6 +1,6 @@
+ sudo: false
+ 
+-language: cpp
++language: c
+ 
+ env:
+   - KVER=3.16
+@@ -18,6 +18,7 @@ env:
+   - KVER=4.8
+   - KVER=4.9
+   - KVER=4.10
++  - KVER=4.11
+   - KVER=master
+ 
+ matrix:
+diff --git a/ci/build_against_kernel b/ci/build_against_kernel
+index f140c02..f1cd06b 100755
+--- a/ci/build_against_kernel
++++ b/ci/build_against_kernel
+@@ -42,7 +42,6 @@ prepare_kernel() { # srcDir
+   make olddefconfig
+   make prepare
+   make scripts
+-  make kernel
+ 
+   cd "${oldDir}"
+ }
+diff --git a/module/evdi_drv.c b/module/evdi_drv.c
+index c0f3b7a..dc65cae 100644
+--- a/module/evdi_drv.c
++++ b/module/evdi_drv.c
+@@ -61,7 +61,10 @@ static const struct file_operations evdi_driver_fops = {
+ 
+ static struct drm_driver driver = {
+ 	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_PRIME,
++	/* In 4.12+, loading moves from .load() to open-coding */
++#if KERNEL_VERSION(4, 12, 0) > LINUX_VERSION_CODE
+ 	.load = evdi_driver_load,
++#endif
+ 	.unload = evdi_driver_unload,
+ 	.preclose = evdi_driver_preclose,
+ 
+@@ -114,11 +117,48 @@ static void evdi_add_device(void)
+ 	evdi_context.dev_count++;
+ }
+ 
++/*
++ * In 4.12+, the DRM core moves from the load() callback to requiring drivers
++ * to open-code their registration in their probe callback.
++ *
++ * Most of our setup happens before registration but the stats require
++ * registration first.
++ */
++#if KERNEL_VERSION(4, 12, 0) <= LINUX_VERSION_CODE
++static int evdi_platform_probe(struct platform_device *pdev)
++{
++	struct drm_device *dev;
++	int ret;
++
++	EVDI_CHECKPT();
++
++	dev = drm_dev_alloc(&driver, &pdev->dev);
++	if (IS_ERR(dev))
++		return PTR_ERR(dev);
++
++	ret = evdi_driver_setup_early(dev);
++	if (ret)
++		goto err_free;
++
++	ret = drm_dev_register(dev, 0);
++	if (ret)
++		goto err_free;
++
++	evdi_driver_setup_late(dev);
++
++	return 0;
++
++err_free:
++	drm_dev_unref(dev);
++	return ret;
++}
++#else
+ static int evdi_platform_probe(struct platform_device *pdev)
+ {
+ 	EVDI_CHECKPT();
+ 	return drm_platform_init(&driver, pdev);
+ }
++#endif
+ 
+ static int evdi_platform_remove(struct platform_device *pdev)
+ {
+diff --git a/module/evdi_drv.h b/module/evdi_drv.h
+index 476a810..677076d 100644
+--- a/module/evdi_drv.h
++++ b/module/evdi_drv.h
+@@ -158,4 +158,6 @@ struct drm_clip_rect evdi_framebuffer_sanitize_rect(
+ 			const struct evdi_framebuffer *fb,
+ 			const struct drm_clip_rect *rect);
+ 
++int evdi_driver_setup_early(struct drm_device *dev);
++void evdi_driver_setup_late(struct drm_device *dev);
+ #endif
+diff --git a/module/evdi_gem.c b/module/evdi_gem.c
+index de61fb4..a853b74 100755
+--- a/module/evdi_gem.c
++++ b/module/evdi_gem.c
+@@ -443,10 +443,17 @@ static struct dma_buf_ops evdi_dmabuf_ops = {
+ 	.detach = evdi_detach_dma_buf,
+ 	.map_dma_buf = evdi_map_dma_buf,
+ 	.unmap_dma_buf = evdi_unmap_dma_buf,
++#if KERNEL_VERSION(4, 12, 0) > LINUX_VERSION_CODE
+ 	.kmap = evdi_dmabuf_kmap,
+ 	.kmap_atomic = evdi_dmabuf_kmap_atomic,
+ 	.kunmap = evdi_dmabuf_kunmap,
+ 	.kunmap_atomic = evdi_dmabuf_kunmap_atomic,
++#else
++	.map = evdi_dmabuf_kmap,
++	.map_atomic = evdi_dmabuf_kmap_atomic,
++	.unmap = evdi_dmabuf_kunmap,
++	.unmap_atomic = evdi_dmabuf_kunmap_atomic,
++#endif
+ 	.mmap = evdi_dmabuf_mmap,
+ 	.release = drm_gem_dmabuf_release,
+ };
+diff --git a/module/evdi_main.c b/module/evdi_main.c
+index c8ed5da..d0a9e92 100644
+--- a/module/evdi_main.c
++++ b/module/evdi_main.c
+@@ -15,8 +15,7 @@
+ #include "evdi_drv.h"
+ #include "evdi_cursor.h"
+ 
+-int evdi_driver_load(struct drm_device *dev,
+-		     __always_unused unsigned long flags)
++int evdi_driver_setup_early(struct drm_device *dev)
+ {
+ 	struct platform_device *platdev = NULL;
+ 	struct evdi_device *evdi;
+@@ -52,8 +51,6 @@ int evdi_driver_load(struct drm_device *dev,
+ 	if (ret)
+ 		goto err_fb;
+ 
+-	evdi_stats_init(evdi);
+-
+ 	drm_kms_helper_poll_init(dev);
+ 
+ 	platdev = to_platform_device(dev->dev);
+@@ -71,6 +68,27 @@ int evdi_driver_load(struct drm_device *dev,
+ 	return ret;
+ }
+ 
++void evdi_driver_setup_late(struct drm_device *dev)
++{
++	evdi_stats_init(dev->dev_private);
++}
++
++#if KERNEL_VERSION(4, 12, 0) > LINUX_VERSION_CODE
++int evdi_driver_load(struct drm_device *dev,
++		     __always_unused unsigned long flags)
++{
++	int ret;
++
++	ret =  evdi_driver_setup_early(dev);
++	if (ret)
++		return ret;
++
++	evdi_driver_setup_late(dev);
++	return 0;
++
++}
++#endif
++
+ #if KERNEL_VERSION(4, 11, 0) > LINUX_VERSION_CODE
+ int evdi_driver_unload(struct drm_device *dev)
+ #else
+diff --git a/module/evdi_modeset.c b/module/evdi_modeset.c
+index 98a51e2..b2698b7 100755
+--- a/module/evdi_modeset.c
++++ b/module/evdi_modeset.c
+@@ -159,10 +159,19 @@ static void evdi_sched_page_flip(struct work_struct *work)
+ 	}
+ }
+ 
++#if KERNEL_VERSION(4, 12, 0) > LINUX_VERSION_CODE
+ static int evdi_crtc_page_flip(struct drm_crtc *crtc,
+ 			       struct drm_framebuffer *fb,
+ 			       struct drm_pending_vblank_event *event,
+ 			       __always_unused uint32_t page_flip_flags)
++#else
++static int evdi_crtc_page_flip(
++	struct drm_crtc *crtc,
++	struct drm_framebuffer *fb,
++	struct drm_pending_vblank_event *event,
++	__always_unused uint32_t page_flip_flags,
++	__always_unused struct drm_modeset_acquire_ctx *ctx)
++#endif
+ {
+ 	struct drm_device *dev = crtc->dev;
+ 	struct evdi_device *evdi = dev->dev_private;
+@@ -243,7 +252,11 @@ static int evdi_crtc_cursor_set(struct drm_crtc *crtc,
+ 	 * For now we don't care whether the application wanted the mouse set,
+ 	 * or not.
+ 	 */
++#if KERNEL_VERSION(4, 12, 0) > LINUX_VERSION_CODE
+ 	return evdi_crtc_page_flip(crtc, NULL, NULL, 0);
++#else
++	return evdi_crtc_page_flip(crtc, NULL, NULL, 0, NULL);
++#endif
+ }
+ 
+ static int evdi_crtc_cursor_move(struct drm_crtc *crtc, int x, int y)
+@@ -261,7 +274,12 @@ static int evdi_crtc_cursor_move(struct drm_crtc *crtc, int x, int y)
+ 		goto error;
+ 	}
+ 	mutex_unlock(&dev->struct_mutex);
++#if KERNEL_VERSION(4, 12, 0) > LINUX_VERSION_CODE
+ 	return evdi_crtc_page_flip(crtc, NULL, NULL, 0);
++#else
++	return evdi_crtc_page_flip(crtc, NULL, NULL, 0, NULL);
++#endif
++
+ error:
+ 	mutex_unlock(&dev->struct_mutex);
+ 	return ret;
+diff --git a/module/evdi_painter.c b/module/evdi_painter.c
+index 3899b74..54280ba 100644
+--- a/module/evdi_painter.c
++++ b/module/evdi_painter.c
+@@ -262,7 +262,7 @@ static void evdi_painter_send_crtc_state(struct evdi_painter *painter,
+ #endif
+ 		evdi_painter_send_event(painter->drm_filp, &event->base.link);
+ 	} else {
+-		 EVDI_WARN("Painter is not connected!");
++		EVDI_WARN("Painter is not connected!");
+ 	}
+ }
+ 
+@@ -294,7 +294,7 @@ static void evdi_painter_send_mode_changed(
+ #endif
+ 		evdi_painter_send_event(painter->drm_filp, &event->base.link);
+ 	} else {
+-		 EVDI_WARN("Painter is not connected!");
++		EVDI_WARN("Painter is not connected!");
+ 	}
+ }
+ 
+diff --git a/module/evdi_stats.c b/module/evdi_stats.c
+index d8878e1..57fba1c 100644
+--- a/module/evdi_stats.c
++++ b/module/evdi_stats.c
+@@ -28,7 +28,7 @@ void evdi_stats_init(struct evdi_device *evdi)
+ {
+ 	int i, retval;
+ 
+-	DRM_INFO("evdi: evdi_stats_init\n");
++	DRM_INFO("evdi: %s\n", __func__);
+ 	atomic_set(&evdi->frame_count, 0);
+ 	for (i = 0; i < ARRAY_SIZE(evdi_device_attributes); i++) {
+ 		retval =
+@@ -44,7 +44,7 @@ void evdi_stats_cleanup(struct evdi_device *evdi)
+ {
+ 	int i;
+ 
+-	DRM_INFO("evdi: evdi_stats_cleanup\n");
++	DRM_INFO("evdi: %s\n", __func__);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(evdi_device_attributes); i++)
+ 		device_remove_file(evdi->ddev->primary->kdev,

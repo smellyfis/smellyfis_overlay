@@ -26,6 +26,7 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/${P}-linux-4.12.0.patch"
 
 	default
 }
