@@ -7,7 +7,8 @@ inherit eutils systemd udev
 
 DESCRIPTION="DisplayLink USB Graphics Software"
 HOMEPAGE="http://www.displaylink.com/downloads/ubuntu"
-SRC_URI="http://www.displaylink.com/downloads/file?id=993 -> ${P}.zip"
+#SRC_URI="http://www.displaylink.com/downloads/file?id=993 -> ${P}.zip"
+SRC_URI="${P}.zip"
 
 LICENSE="DisplayLink"
 SLOT="0"
