@@ -14,6 +14,7 @@ SLOT="0"
 KEYWORDS="~x86 ~amd64"
 IUSE="systemd"
 
+RESTRICT="fetch"
 QA_PREBUILT="/opt/displaylink/DisplayLinkManager"
 
 DEPEND="app-admin/chrpath"
