@@ -8,6 +8,7 @@ inherit eutils systemd udev
 DESCRIPTION="DisplayLink USB Graphics Software"
 HOMEPAGE="http://www.displaylink.com/downloads/ubuntu"
 #SRC_URI="http://www.displaylink.com/downloads/file?id=993 -> ${P}.zip"
+DL_URI="http://www.displaylink.com/downloads/file?id=993"
 SRC_URI="${P}.zip"
 
 LICENSE="DisplayLink"
@@ -25,6 +26,11 @@ RDEPEND=">=sys-devel/gcc-4.8.3
 	|| ( x11-drivers/xf86-video-modesetting >=x11-base/xorg-server-1.17.0 )
 	!systemd? ( sys-power/pm-utils )"
 
+
+pkg_nofetch() {
+	einfo "please go to ${DL_URI}"
+	einfo "copy the downloaded file to Your DISTDIR/${p}.zip"
+}
 src_unpack() {
 	default
 	sh ./"${PN}"-"${PV}".run --noexec --target "${P}"
