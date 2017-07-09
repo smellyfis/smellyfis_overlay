@@ -29,8 +29,9 @@ RDEPEND=">=sys-devel/gcc-4.8.3
 
 pkg_nofetch() {
 	einfo "please go to ${DL_URI}"
-	einfo "copy the downloaded file to Your DISTDIR/${p}.zip"
+	einfo "copy the downloaded file to Your DISTDIR/${P}.zip"
 }
+
 src_unpack() {
 	default
 	sh ./"${PN}"-"${PV}".run --noexec --target "${P}"
