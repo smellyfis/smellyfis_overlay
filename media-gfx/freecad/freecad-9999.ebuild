@@ -66,7 +66,7 @@ RESTRICT="mirror"
 #   DEPEND and RDEPEND:
 #		salome-smesh - science overlay
 #		zipio++ - not in portage yet
-S="${WORKDIR}/FreeCAD-${PV}"
+#S="${WORKDIR}/FreeCAD-${PV}"
 
 DOCS=( README.md ChangeLog.txt )
 
