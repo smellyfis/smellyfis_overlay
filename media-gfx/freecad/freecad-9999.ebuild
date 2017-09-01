@@ -43,7 +43,7 @@ COMMON_DEPEND="
 	media-libs/coin
 	media-libs/freetype
 	|| ( sci-libs/opencascade:7.2.0[vtk] sci-libs/opencascade:6.9.1[vtk] sci-libs/opencascade:6.9.0[vtk] sci-libs/opencascade:6.8.0 sci-libs/opencascade:6.7.1 )
-	sci-libs/libmed[$PYTHON_USEDEP]
+	sci-libs/libmed
 	sys-libs/zlib
 	virtual/glu"
 RDEPEND="${COMMON_DEPEND}
@@ -54,6 +54,10 @@ DEPEND="${COMMON_DEPEND}
 	>=dev-lang/swig-2.0.4-r1:0
 	dev-python/pyside-tools:0[${PYTHON_USEDEP}]"
 
+PATCHES=(
+	"${FILESDIR}"/${PN}-0.14.3702-install-paths.patch
+)
+
 # https://bugs.gentoo.org/show_bug.cgi?id=352435
 # https://www.gentoo.org/foundation/en/minutes/2011/20110220_trustees.meeting_log.txt
 RESTRICT="mirror"
@@ -62,6 +66,7 @@ RESTRICT="mirror"
 #   DEPEND and RDEPEND:
 #		salome-smesh - science overlay
 #		zipio++ - not in portage yet
+S="${WORKDIR}/FreeCAD-${PV}"
 
 DOCS=( README.md ChangeLog.txt )
 
@@ -82,9 +87,9 @@ src_configure() {
 	local mycmakeargs=(
 		-DOCC_INCLUDE_DIR="${CASROOT}"/inc
 		-DOCC_LIBRARY_DIR="${CASROOT}"/$(get_libdir)
-		-DCMAKE_INSTALL_DATADIR=/usr/share/${P}
-		-DCMAKE_INSTALL_DOCDIR=/usr/share/doc/${PF}
-		-DCMAKE_INSTALL_INCLUDEDIR=/usr/include/${P}
+		-DCMAKE_INSTALL_DATADIR=share/${P}
+		-DCMAKE_INSTALL_DOCDIR=share/doc/${PF}
+		-DCMAKE_INSTALL_INCLUDEDIR=include/${P}
 		-DFREECAD_USE_EXTERNAL_KDL="OFF"
 	)
 
@@ -122,9 +127,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	fdo-mime_mime_database_update
+	xdg_mimeinfo_database_update
 }
 
 pkg_postrm() {
-	fdo-mime_mime_database_update
+	xdg_mimeinfo_database_update
 }
