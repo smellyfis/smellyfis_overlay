@@ -8,6 +8,8 @@ inherit autotools eutils check-reqs multilib java-pkg-opt-2 flag-o-matic version
 DESCRIPTION="Development platform for CAD/CAE, 3D surface/solid modeling and data exchange"
 HOMEPAGE="http://www.opencascade.org/"
 SRC_URI="http://www.opencascade.com/sites/default/files/private/occt/OCC_${PV}_release/opencascade-${PV}.tgz"
+#this is for the overlay
+RESTRICT="fetch"
 
 LICENSE="|| ( Open-CASCADE-LGPL-2.1-Exception-1.0 LGPL-2.1 )"
 SLOT="${PV}"
@@ -36,6 +38,15 @@ CHECKREQS_DISK_BUILD="3584M"
 
 PATCHES=( "${FILESDIR}"/${PN}-6.8.0-fixed-DESTDIR.patch
 	"${FILESDIR}"/${PN}-6.9.1-vtk-configure.patch )
+
+#for the overlay
+pkg_nofetch()
+{
+	einfo "Because of overlay bits go to opencascade's website to download"
+	einfo "The Page for this version is located:"
+	einfo "${SRC_URI}"
+	einfo "copy it to your DISTDIR"
+}
 
 pkg_setup() {
 	check-reqs_pkg_setup
