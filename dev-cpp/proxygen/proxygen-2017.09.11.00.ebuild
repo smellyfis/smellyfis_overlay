@@ -26,4 +26,4 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${P}/${PN}"
 
-PATCHES=( "${FILESDIR}/proxygen-0.29.0-optional-tests.diff" )
+#PATCHES=( "${FILESDIR}/proxygen-0.29.0-optional-tests.diff" )
