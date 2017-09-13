@@ -1,0 +1,29 @@
+--- folly/Makefile.am	2017-09-13 07:53:00.343815149 -0400
++++ folly/Makefile.am	2017-09-13 07:55:44.966420751 -0400
+@@ -702,14 +702,14 @@
+ 	experimental/symbolizer/Symbolizer.cpp
+ endif
+ 
+-libfollybasesse42_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LT_VERSION)
++libfollybasesse42_la_LDFLAGS = $(AM_LDFLAGS) -lunwind -version-info $(LT_VERSION)
+ libfollybasesse42_la_CXXFLAGS = -msse4.2 -mpclmul
+ 
+ libfollybase_la_LIBADD = libfollybasesse42.la
+-libfollybase_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LT_VERSION)
++libfollybase_la_LDFLAGS = $(AM_LDFLAGS) -lunwind -version-info $(LT_VERSION)
+ 
+ libfolly_la_LIBADD = libfollybase.la
+-libfolly_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LT_VERSION) -lssl
++libfolly_la_LDFLAGS = $(AM_LDFLAGS) -lunwind -version-info $(LT_VERSION) -lssl
+ 
+ FingerprintTables.cpp: generate_fingerprint_tables
+ 	./generate_fingerprint_tables
+@@ -717,7 +717,7 @@
+ 
+ libfollybenchmark_la_SOURCES = Benchmark.cpp
+ libfollybenchmark_la_LIBADD = libfolly.la
+-libfollybenchmark_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LT_VERSION)
++libfollybenchmark_la_LDFLAGS = $(AM_LDFLAGS) -lunwind -version-info $(LT_VERSION)
+ 
+ # install pkg-config metadata file
+ pkgconfigdir = $(libdir)/pkgconfig
