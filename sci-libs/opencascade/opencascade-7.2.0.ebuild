@@ -155,7 +155,7 @@ src_configure() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install
+	cmake-utils_src_install
 
 	prune_libtool_files
 
