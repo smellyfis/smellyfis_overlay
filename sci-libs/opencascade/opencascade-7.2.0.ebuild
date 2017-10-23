@@ -14,7 +14,7 @@ RESTRICT="fetch"
 LICENSE="|| ( Open-CASCADE-LGPL-2.1-Exception-1.0 LGPL-2.1 )"
 SLOT="${PV}"
 KEYWORDS="~amd64 ~x86"
-IUSE="debug doc examples freeimage gl2ps java qt4 +tbb +vtk"
+IUSE="debug doc examples freeimage gl2ps java qt5 +tbb ffmpeg"
 
 DEPEND="app-eselect/eselect-opencascade
 	dev-lang/tcl:0=
@@ -26,11 +26,12 @@ DEPEND="app-eselect/eselect-opencascade
 	virtual/glu
 	virtual/opengl
 	x11-libs/libXmu
+	ffmpeg? ( virtual/ffmpeg )
 	freeimage? ( media-libs/freeimage )
 	gl2ps? ( x11-libs/gl2ps )
 	java? ( >=virtual/jdk-0:= )
 	tbb? ( dev-cpp/tbb )
-	vtk? ( || ( sci-libs/vtk[imaging] sci-libs/vtk[qt4] sci-libs/vtk[rendering] sci-libs/vtk[views] sci-libs/vtk[all-modules] ) )"
+	|| ( sci-libs/vtk[imaging] sci-libs/vtk[qt5] sci-libs/vtk[rendering] sci-libs/vtk[views] sci-libs/vtk[all-modules] ) "
 RDEPEND="${DEPEND}"
 
 CHECKREQS_MEMORY="256M"
@@ -67,7 +68,7 @@ src_prepare() {
 #	java-pkg-opt-2_src_prepare
 
 	# Feed environment variables used by Opencascade compilation
-#	my_install_dir=${EROOT}usr/$(get_libdir)/${P}/ros
+	my_install_dir=${EROOT}usr/$(get_libdir)/${P}/ros
 #	local my_env_install="#!/bin/sh -f
 #if [ -z \"\$PATH\" ]; then
 #	export PATH=VAR_CASROOT/Linux/bin
@@ -102,7 +103,7 @@ src_prepare() {
 #TCLHOME=${EROOT}usr/bin
 #TCLLIBPATH=${my_sys_lib}
 #ITK_LIBRARY=${my_sys_lib}/itk$(grep ITK_VER /usr/include/itk.h | sed 's/^.*"\(.*\)".*/\1/')
-#ITCL_LIBRARY=${my_sys_lib}/itcl$(grep ITCL_VER /usr/include/itcl.h | sed 's/^.*"\(.*\)".*/\1/')
+#ITCL_LIBRARY=${my_sys_lib}/itcl$(grep ITCL_VER /usr/include/itcl.h | sed 's/^.*"\(.*\)".*/\1/')
 #TIX_LIBRARY=${my_sys_lib}/tix$(grep TIX_VER /usr/include/tix.h | sed 's/^.*"\(.*\)".*/\1/')
 #TK_LIBRARY=${my_sys_lib}/tk$(grep TK_VER /usr/include/tk.h | sed 's/^.*"\(.*\)".*/\1/')
 #TCL_LIBRARY=${my_sys_lib}/tcl$(grep TCL_VER /usr/include/tcl.h | sed 's/^.*"\(.*\)".*/\1/')"
@@ -131,11 +132,12 @@ src_prepare() {
 
 src_configure() {
 	local mycmakeargs=(
-		-DUSE_VTK="$(usex vtk)" \
+		-DUSE_FFMPEG="$(usex ffmpeg)" \
 		-DUSE_TBB="$(usex tbb)" \
 		-DUSE_FREEIMAGE="$(usex freeimage)" \
-		-DUSE_GL2PS="$(usex gl2ps)")
-#		--prefix=${my_install_dir}/lin --exec-prefix=${my_install_dir}/lin \
+		-DUSE_GL2PS="$(usex gl2ps)" \
+		-DBUILD_WITH_DEBUG="$(usex debug)" )
+		-DCMAKE_INSTALL_PREFIX=${my_install_dir}/lin --exec-prefix=${my_install_dir}/lin \
 #		--with-tcl="${EROOT}usr/$(get_libdir)" --with-tk="${EROOT}usr/$(get_libdir)" \
 #		--with-freetype="${EROOT}usr" \
 #		--with-ftgl="${EROOT}usr" \
