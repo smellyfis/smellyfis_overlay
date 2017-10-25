@@ -39,6 +39,7 @@ RDEPEND="${DEPEND}"
 CHECKREQS_MEMORY="256M"
 CHECKREQS_DISK_BUILD="3584M"
 
+PATCHES=( "${FILESDIR}"/opencascade-7.2.0-buildsystem.patch)
 #PATCHES=( "${FILESDIR}"/${PN}-6.8.0-fixed-DESTDIR.patch
 #	"${FILESDIR}"/${PN}-6.9.1-vtk-configure.patch )
 
