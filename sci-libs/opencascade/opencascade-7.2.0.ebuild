@@ -16,7 +16,7 @@ SLOT="${PV}"
 KEYWORDS="~amd64 ~x86"
 IUSE="debug doc examples freeimage gl2ps java qt5 +tbb +vtk ffmpeg"
 
-DEPEND="app-eselect/eselect-opencascade
+RDEPEND="app-eselect/eselect-opencascade
 	dev-lang/tcl:0=
 	dev-lang/tk:0=
 	dev-tcltk/itcl
@@ -27,14 +27,14 @@ DEPEND="app-eselect/eselect-opencascade
 	virtual/glu
 	virtual/opengl
 	x11-libs/libXmu
-	doc? ( app-doc/doxygen )
 	freeimage? ( media-libs/freeimage )
 	ffmpeg? ( virtual/ffmpeg )
 	gl2ps? ( x11-libs/gl2ps )
 	java? ( >=virtual/jdk-0:= )
 	tbb? ( dev-cpp/tbb )
 	vtk? ( || ( sci-libs/vtk[imaging] sci-libs/vtk[qt5] sci-libs/vtk[rendering] sci-libs/vtk[views] sci-libs/vtk[all-modules] ) )"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	doc? ( app-doc/doxygen ) "
 
 CHECKREQS_MEMORY="256M"
 CHECKREQS_DISK_BUILD="3584M"
