@@ -14,7 +14,7 @@ RESTRICT="fetch"
 LICENSE="|| ( Open-CASCADE-LGPL-2.1-Exception-1.0 LGPL-2.1 )"
 SLOT="${PV}"
 KEYWORDS="~amd64 ~x86"
-IUSE="debug doc examples freeimage gl2ps java qt5 +tbb +vtk ffmpeg"
+IUSE="debug doc examples freeimage gl2ps java qt5 +tbb +vtk ffmpeg test"
 
 RDEPEND="app-eselect/eselect-opencascade
 	dev-lang/tcl:0=
