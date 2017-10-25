@@ -1,6 +1,6 @@
 --- CMakeLists.txt	2016-11-25 12:52:00.000000000 +0300
 +++ CMakeLists.txt	2017-06-05 10:38:15.000000000 +0300
-@@ -755,15 +755,15 @@
+@@ -863,15 +863,15 @@
  endif()
  
   # change custom.bat/sh
@@ -24,7 +24,7 @@
  
  # write current custom.bat/sh (for install directory)
  set (SUB_CUSTOM_BUILD_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.install.${SCRIPT_EXT}")
-@@ -891,7 +891,8 @@
+@@ -1041,7 +1041,8 @@
  list (REMOVE_DUPLICATES OCCT_COMPILE_DEFINITIONS)
  
  # export compile definitions and C/C++ flags for each configuration to OpenCASCADE config files
@@ -34,7 +34,7 @@
    set (SET_OpenCASCADE_COMPILE_DEFINITIONS)
    string (TOUPPER "${OCCT_CONFIGURATION}" OCCT_CONFIGURATION_UPPER)
    string (TOLOWER "${OCCT_CONFIGURATION}" OCCT_CONFIGURATION_LOWER)
-@@ -903,10 +904,11 @@
+@@ -1053,10 +1054,11 @@
    set (SET_OpenCASCADE_CMAKE_C_FLAGS "${CMAKE_C_FLAGS_${OCCT_CONFIGURATION_UPPER}}")
    set (SET_OpenCASCADE_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_${OCCT_CONFIGURATION_UPPER}}")
    configure_file("${CMAKE_SOURCE_DIR}/adm/templates/OpenCASCADECompileDefinitionsAndFlags.cmake.in" "OpenCASCADECompileDefinitionsAndFlags-${OCCT_CONFIGURATION_LOWER}.cmake" @ONLY)
