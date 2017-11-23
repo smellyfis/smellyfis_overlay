@@ -1,4 +1,4 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -105,7 +105,7 @@ src_install() {
 #	exeinto "${VENDOR_LIB}"/Slic3r
 #	doexe slic3r.pl
 
-	dosym /usr/bin/slic3r-prusa3d /usr/bin/slic3r.pl
+	dosym "${ED%/}"/usr/bin/slic3r-prusa3d /usr/bin/slic3r.pl
 
 	make_desktop_entry slic3r.pl \
 		Slic3r \
