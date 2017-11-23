@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>dylanthies@gmail.com</email>
+		<name>Dylan Thies</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="github">prusa3d/slic3r</remote-id>
+	</upstream>
+	<use>
+		<flag name="gui">build gui for slic3r</flag>
+	</use>
+</pkgmetadata>
