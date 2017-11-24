@@ -29,7 +29,7 @@ DEPEND="${RDEPEND}
 	doc? ( app-doc/doxygen )
 	test? ( dev-python/pytest[${PYTHON_USEDEP}] )"
 S="${WORKDIR}/${MY_PN}-${MY_PV}"
-PATCHES=( "${FILESDIR}/${PN}-2.3.1-fix-install-paths.patch" )
+PATCHES=( "${FILESDIR}/${PN}-3.0.3-fix-install-paths.patch" )
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 DOCS=( README.md )
 
