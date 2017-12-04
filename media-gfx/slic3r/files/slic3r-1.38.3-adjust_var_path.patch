@@ -2,9 +2,10 @@ diff --git a/lib/Slic3r.pm b/lib/Slic3r.pm
 index 198a5282..1da6fe03 100644
 --- a/lib/Slic3r.pm
 +++ b/lib/Slic3r.pm
-@@ -51,7 +51,7 @@ warn "Running Slic3r under Perl 5.16 is neither supported nor recommended\n"
+@@ -40,7 +40,7 @@ warn "Running Slic3r under Perl 5.16 is neither supported nor recommended\n"
  
  use FindBin;
+
  # Let the XS module know where the GUI resources reside.
 -set_var_dir(decode_path($FindBin::Bin) . "/var/");
 +set_var_dir("/usr/share/slic3r-prusa3d/");
