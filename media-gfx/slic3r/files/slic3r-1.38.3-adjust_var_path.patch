@@ -5,7 +5,7 @@
  
  # Let the XS module know where the GUI resources reside.
 -set_var_dir(decode_path($FindBin::Bin) . "/var");
-+set_var_dir(decode_path("/usr/share/slic3r-prusa3d");
++set_var_dir("/usr/share/slic3r-prusa3d");
  
  use Moo 1.003001;
  
