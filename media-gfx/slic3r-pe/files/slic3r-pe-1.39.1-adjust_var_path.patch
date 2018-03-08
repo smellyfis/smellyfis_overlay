@@ -1,0 +1,21 @@
+--- a/lib/Slic3r.pm	2017-12-01 12:56:32.000000000 -0500
++++ b/lib/Slic3r.pm	2017-12-04 15:36:56.174577313 -0500
+@@ -41,7 +41,7 @@
+ use FindBin;
+ 
+ # Let the XS module know where the GUI resources reside.
+-set_resources_dir(decode_path($FindBin::Bin) . (($^O eq 'darwin') ? '/../Resources' : '/resources'));
++set_resources_dir(decode_path($FindBin::RealBin) . "/../share/slic3r-prusa3d" . (($^O eq 'darwin') ? '/../Resources' : '/resources'));
+ set_var_dir(resources_dir() . "/icons");
+ set_local_dir(resources_dir() . "/localization/");
+  
+--- a/xs/CMakeLists.txt	2017-11-22 21:23:00.656956898 -0500
++++ b/xs/CMakeLists.txt	2017-11-22 21:26:34.038774760 -0500
+@@ -562,5 +562,5 @@
+ endif ()
+ 
+ # Installation
+-install(TARGETS XS DESTINATION lib/slic3r-prusa3d/auto/Slic3r/XS)
+-install(FILES lib/Slic3r/XS.pm DESTINATION lib/slic3r-prusa3d/Slic3r)
++install(TARGETS XS DESTINATION ${PERL_VENDORARCH}/auto/Slic3r/XS)
++install(FILES lib/Slic3r/XS.pm DESTINATION ${PERL_VENDORLIB}/Slic3r)
