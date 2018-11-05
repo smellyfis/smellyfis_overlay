@@ -1,0 +1,21 @@
+--- a/CMakeLists.txt	2017-11-22 21:23:00.656956898 -0500
++++ b/CMakeLists.txt	2017-11-22 21:26:34.038774760 -0500
+@@ -40,6 +40,7 @@
+ message("PATH: $ENV{PATH}")
+ message("PERL5LIB: $ENV{PERL5LIB}")
+ find_package(Perl REQUIRED)
++find_package(PerlLibs REQUIRED)
+ if (WIN32)
+         # On Windows passing the PERL5LIB variable causes various problems (such as with MAX_PATH and others),
+             # basically I've found no good way to do it on Windows.
+@@ -95,7 +96,6 @@
+ 
+ install(PROGRAMS slic3r.pl DESTINATION bin RENAME slic3r-prusa3d)
+ 
+-file(GLOB MyVar var/*.png)
+-install(FILES ${MyVar} DESTINATION share/slic3r-prusa3d)
+-install(FILES lib/Slic3r.pm DESTINATION lib/slic3r-prusa3d)
+-install(DIRECTORY lib/Slic3r DESTINATION lib/slic3r-prusa3d)
++install(DIRECTORY resources DESTINATION share/slic3r-prusa3d)
++install(FILES lib/Slic3r.pm DESTINATION ${PERL_VENDORLIB})
++install(DIRECTORY lib/Slic3r DESTINATION ${PERL_VENDORLIB})
