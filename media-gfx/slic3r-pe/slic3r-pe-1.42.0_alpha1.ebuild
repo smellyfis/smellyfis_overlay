@@ -54,6 +54,7 @@ RDEPEND=">=dev-libs/boost-1.55[threads]
 DEPEND="${RDEPEND}
 	dev-cpp/tbb
 	net-misc/curl
+	sci-libs/nlopt[cxx]
 	!static? ( dev-cpp/eigen
 		dev-libs/expat
 		media-libs/glew )
