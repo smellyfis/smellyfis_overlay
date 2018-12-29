@@ -69,7 +69,8 @@ DEPEND="${RDEPEND}
 	test? ( perl? (	virtual/perl-Test-Harness
 	virtual/perl-Test-Simple ) )"
 
-S="${WORKDIR}/Slic3r-version_${PV}/"
+#S="${WORKDIR}/Slic3r-version_${PV}/"
+S="${WORKDIR}/Slic3r-version_1.42.0-alpha1/"
 
 src_prepare() {
 	#pushd "${WORKDIR}/Slic3r-version_${PV}" || die
