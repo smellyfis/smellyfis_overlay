@@ -14,7 +14,7 @@ index 625ebb334..62a7227bb 100644
  option(SLIC3R_GUI    			"Compile Slic3r with GUI components (OpenGL, wxWidgets)" 1)
  option(SLIC3R_PROFILE 			"Compile Slic3r with an invasive Shiny profiler" 0)
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 31c801379..45dfb3a47 100644
+index 31c801379..4c2954709 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -188,3 +188,5 @@ else ()
@@ -22,4 +22,4 @@ index 31c801379..45dfb3a47 100644
      )
  endif()
 +
-+INSTALL(TARGETS slic3r RUNTIME DESTINATION ${CMAKE_INSTALL_BIN_DIR})
++INSTALL(TARGETS slic3r RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
