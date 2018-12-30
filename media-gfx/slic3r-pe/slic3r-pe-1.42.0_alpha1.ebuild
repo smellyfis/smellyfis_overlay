@@ -122,7 +122,7 @@ src_install() {
 
 #	dosym "${ED%/}"/usr/bin/slic3r-prusa3d /usr/bin/slic3r.pl
 
-	make_desktop_entry slic3r-prusa3d \
+	make_desktop_entry slic3r-gui \
 		"Slic3r Prusa Edition" \
 		"/usr/share/slic3r-prusa3d/var/Slic3r.icns" \
 		"Graphics;3DGraphics;Engineering;Development"
