@@ -76,6 +76,7 @@ S="${WORKDIR}/Slic3r-version_1.42.0-alpha1/"
 src_prepare() {
 	#pushd "${WORKDIR}/Slic3r-version_${PV}" || die
 	pushd "${WORKDIR}/Slic3r-version_1.42.0-alpha1" || die
+	eapply "${FILESDIR}/${P}-add_install.patch"
 	#eapply "${FILESDIR}/${P}-cmake_paths.patch"
 	#eapply "${FILESDIR}/${P}-adjust_var_path.patch"
 	eapply_user

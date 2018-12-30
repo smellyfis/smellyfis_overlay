@@ -1,0 +1,25 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 625ebb334..62a7227bb 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -20,6 +20,10 @@ else()
+ 	endif()
+ endif()
+ 
++IF(UNIX)
++    INCLUDE(GNUInstallDirs)
++ENDIF(UNIX)
++
+ option(SLIC3R_STATIC 			"Compile Slic3r with static libraries (Boost, TBB, glew)" ${SLIC3R_STATIC_INITIAL})
+ option(SLIC3R_GUI    			"Compile Slic3r with GUI components (OpenGL, wxWidgets)" 1)
+ option(SLIC3R_PROFILE 			"Compile Slic3r with an invasive Shiny profiler" 0)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 31c801379..4280711fa 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -188,3 +188,5 @@ else ()
+         VERBATIM
+     )
+ endif()
++
++INSTALL(TARGETS slic3r DESTINATION ${CMAKE_INSTALL_BIN_DIR})
