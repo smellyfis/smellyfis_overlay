@@ -139,8 +139,8 @@ index 59b23c133..5ae194720 100644
      // The resources are packed to 'resources'
 diff --git a/src/slic3r_generated_config.h.in b/src/slic3r_generated_config.h.in
 new file mode 100644
-index 000000000..3d2bad7b3
+index 000000000..b4d304cc4
 --- /dev/null
 +++ b/src/slic3r_generated_config.h.in
 @@ -0,0 +1 @@
-+#cmakedefine RESOURCE_PATH
++#cmakedefine RESOURCE_PATH "@RESOURCE_PATH@"
