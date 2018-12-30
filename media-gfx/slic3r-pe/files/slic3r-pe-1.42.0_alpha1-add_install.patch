@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 62a7227bb..600427038 100644
+index 625ebb334..600427038 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -11,22 +11,26 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+@@ -11,18 +11,26 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
  endif()
  
  if(DEFINED ENV{SLIC3R_STATIC})
@@ -21,24 +21,24 @@ index 62a7227bb..600427038 100644
 +    endif()
  endif()
  
-+#standard unix directories for installation
- IF(UNIX)
-     INCLUDE(GNUInstallDirs)
-+ELSE(UNIX)
-+    #so images get put in the right place
-+    SET(CMAKE_INSTALL_DATADIR "share")
- ENDIF(UNIX)
- 
 -option(SLIC3R_STATIC 			"Compile Slic3r with static libraries (Boost, TBB, glew)" ${SLIC3R_STATIC_INITIAL})
 -option(SLIC3R_GUI    			"Compile Slic3r with GUI components (OpenGL, wxWidgets)" 1)
 -option(SLIC3R_PROFILE 			"Compile Slic3r with an invasive Shiny profiler" 0)
++#standard unix directories for installation
++IF(UNIX)
++    INCLUDE(GNUInstallDirs)
++ELSE(UNIX)
++    #so images get put in the right place
++    SET(CMAKE_INSTALL_DATADIR "share")
++ENDIF(UNIX)
++
 +option(SLIC3R_STATIC            "Compile Slic3r with static libraries (Boost, TBB, glew)" ${SLIC3R_STATIC_INITIAL})
 +option(SLIC3R_GUI               "Compile Slic3r with GUI components (OpenGL, wxWidgets)" 1)
 +option(SLIC3R_PROFILE           "Compile Slic3r with an invasive Shiny profiler" 0)
  option(SLIC3R_MSVC_COMPILE_PARALLEL "Compile on Visual Studio in parallel" 1)
  option(SLIC3R_MSVC_PDB          "Generate PDB files on MSVC in Release mode" 1)
  option(SLIC3R_PERL_XS           "Compile XS Perl module and enable Perl unit and integration tests" 0)
-@@ -39,7 +43,7 @@ option(SLIC3R_BUILD_TESTS       "Build unit tests" OFF)
+@@ -35,7 +43,7 @@ option(SLIC3R_BUILD_TESTS       "Build unit tests" OFF)
  
  if (MSVC)
      if (SLIC3R_MSVC_COMPILE_PARALLEL)
@@ -47,7 +47,7 @@ index 62a7227bb..600427038 100644
      endif ()
      # /bigobj (Increase Number of Sections in .Obj file)
      # error C3859: virtual memory range for PCH exceeded; please recompile with a command line option of '-Zm90' or greater
-@@ -66,17 +70,17 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+@@ -62,17 +70,17 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
  # WIN10SDK_PATH is used to point CMake to the WIN10 SDK installation directory.
  # We pick it from environment if it is not defined in another way
  if(WIN32)
@@ -76,7 +76,7 @@ index 62a7227bb..600427038 100644
      if(WIN10SDK_PATH)
          message("Building with Win10 Netfabb STL fixing service support")
          add_definitions(-DHAS_WIN10SDK)
-@@ -275,6 +279,10 @@ add_custom_target(pot
+@@ -271,6 +279,10 @@ add_custom_target(pot
      COMMENT "Generate pot file from strings in the source tree"
  )
  
@@ -87,7 +87,7 @@ index 62a7227bb..600427038 100644
  # libslic3r, Slic3r GUI and the slic3r executable.
  add_subdirectory(src)
  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT slic3r_app_console)
-@@ -294,5 +302,5 @@ if(SLIC3R_BUILD_TESTS)
+@@ -290,5 +302,5 @@ if(SLIC3R_BUILD_TESTS)
      add_subdirectory(tests)
  endif()
  
@@ -96,7 +96,7 @@ index 62a7227bb..600427038 100644
 +file(GLOB MyVar resources/*.png)
 +install(FILES ${MyVar} DESTINATION ${CMAKE_INSTALL_DATADIR}/slic3r-prusa3d)
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 4c2954709..75970d3e2 100644
+index 31c801379..75970d3e2 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -62,6 +62,8 @@ if (SLIC3R_GUI)
@@ -108,12 +108,13 @@ index 4c2954709..75970d3e2 100644
  add_subdirectory(slic3r)
  
  # Create a slic3r executable
-@@ -189,4 +191,5 @@ else ()
+@@ -188,3 +190,6 @@ else ()
+         VERBATIM
      )
  endif()
- 
++
 +#install slic3r into the filesystem
- INSTALL(TARGETS slic3r RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
++INSTALL(TARGETS slic3r RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 diff --git a/src/slic3r.cpp b/src/slic3r.cpp
 index 59b23c133..8fc450771 100644
 --- a/src/slic3r.cpp
