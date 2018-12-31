@@ -50,7 +50,8 @@ RDEPEND=">=dev-libs/boost-1.55[threads]
 		virtual/perl-Math-Complex
 		>=virtual/perl-Socket-2.16.0
 		x11-libs/libXmu
-		) )"
+		) )
+	gui? ( x11-libs/wxGTK[opengl,webkit] )"
 DEPEND="${RDEPEND}
 	dev-cpp/tbb
 	net-misc/curl
