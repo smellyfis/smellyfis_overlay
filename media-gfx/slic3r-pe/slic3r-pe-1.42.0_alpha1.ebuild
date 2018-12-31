@@ -124,7 +124,7 @@ src_install() {
 
 	make_desktop_entry slic3r-gui \
 		"Slic3r Prusa Edition" \
-		"/usr/share/slic3r-prusa3d/var/Slic3r.icns" \
+		"/usr/share/slic3r-prusa3d/icons/Slic3r.icns" \
 		"Graphics;3DGraphics;Engineering;Development"
 #	popd || die
 }
