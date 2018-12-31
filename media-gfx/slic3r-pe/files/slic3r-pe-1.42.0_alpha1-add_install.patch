@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 625ebb334..2c63f912a 100644
+index 625ebb334..aa049add8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -11,18 +11,26 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -93,7 +93,7 @@ index 625ebb334..2c63f912a 100644
  
 -file(GLOB MyVar var/*.png)
 -install(FILES ${MyVar} DESTINATION share/slic3r-prusa3d)
-+install(DIRECTORY resources/* DESTINATION ${CMAKE_INSTALL_DATADIR}/slic3r-prusa3d)
++install(DIRECTORY resources/ DESTINATION ${CMAKE_INSTALL_DATADIR}/slic3r-prusa3d)
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 31c801379..cd71f8e83 100644
 --- a/src/CMakeLists.txt
