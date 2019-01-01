@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -78,6 +78,7 @@ src_prepare() {
 	#pushd "${WORKDIR}/Slic3r-version_${PV}" || die
 	pushd "${WORKDIR}/Slic3r-version_1.42.0-alpha1" || die
 	eapply "${FILESDIR}/${P}-add_install.patch"
+	eapply "${FILESDIR}/${P}-fix_disappearing_tabs.patch"
 	#eapply "${FILESDIR}/${P}-cmake_paths.patch"
 	#eapply "${FILESDIR}/${P}-adjust_var_path.patch"
 	eapply_user
