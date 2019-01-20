@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=5
@@ -21,8 +21,8 @@ RDEPEND=">=dev-cpp/folly-0.35.0
 		sys-libs/libcap"
 DEPEND="${RDEPEND}
 		sys-devel/autoconf-archive
-		dev-util/gperf
-		test? ( dev-cpp/gmock )"
+		dev-util/gperf"
+#		test? ( dev-cpp/gmock )"
 
 S="${WORKDIR}/${P}/${PN}"
 
