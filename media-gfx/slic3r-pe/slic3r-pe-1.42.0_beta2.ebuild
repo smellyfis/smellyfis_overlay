@@ -81,7 +81,8 @@ src_prepare() {
 	#eapply "${FILESDIR}/${P}-fix_disappearing_tabs.patch"
 	#eapply "${FILESDIR}/${P}-cmake_paths.patch"
 	#eapply "${FILESDIR}/${P}-adjust_var_path.patch"
-	eapply_user
+	cmake-utils_src_prepare
+	#eapply_user
 	popd || die
 }
 
