@@ -91,18 +91,13 @@ src_prepare() {
 src_configure() {
 	use gui && setup-wxwidgets
 	#SLIC3R_NO_AUTO=1 perl-module_src_configure
-	cmake-utils_use gui SLIC3R_GUI
-	cmake-utils_use perl SLIC3R_PERL_XS
-	cmake-utils_use static SLIC3R_STATIC
-	cmake-utils_use test SLIC3R_BUILD_TESTS
-	use gui && cmake-utils_use gui SLIC3R_WX_STABLE
 	local mycmakeargs=(
 		-DSLIC3R_FHS=ON
-		#-DSLIC3R_WX_STABLE=ON
-		#-DSLIC3R_GUI="$(usex gui)"
-		#-DSLIC3r_PERL_XS="$(usex perl)"
-		#-DSLIC3R_STATIC="$(usex static)"
-		#-DSLIC3R_BUILD_TESTS="$(usex test)"
+		-DSLIC3R_WX_STABLE=ON
+		-DSLIC3R_GUI="$(usex gui)"
+		-DSLIC3r_PERL_XS="$(usex perl)"
+		-DSLIC3R_STATIC="$(usex static)"
+		-DSLIC3R_BUILD_TESTS="$(usex test)"
 	)
 
 	cmake-utils_src_configure
