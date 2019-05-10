@@ -5,7 +5,7 @@ EAPI=6
 
 inherit eutils perl-functions cmake-utils wxwidgets
 
-WX_GTK_VER="3.1-gtk3"
+WX_GTK_VER="3.1-gtk3/3.1.1"
 
 DESCRIPTION="A mesh slicer to generate G-code for fused-filament-fabrication (3D printers)"
 HOMEPAGE="http://slic3r.org"
