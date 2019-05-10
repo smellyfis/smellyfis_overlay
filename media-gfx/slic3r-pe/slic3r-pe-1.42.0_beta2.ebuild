@@ -5,7 +5,7 @@ EAPI=6
 
 inherit eutils perl-functions cmake-utils wxwidgets
 
-WX_GTK_VER="3.1-gtk3/3.1.1"
+WX_GTK_VER="3.1-gtk3"
 
 DESCRIPTION="A mesh slicer to generate G-code for fused-filament-fabrication (3D printers)"
 HOMEPAGE="http://slic3r.org"
@@ -83,13 +83,13 @@ src_prepare() {
 	#eapply "${FILESDIR}/${P}-fix_disappearing_tabs.patch"
 	#eapply "${FILESDIR}/${P}-cmake_paths.patch"
 	#eapply "${FILESDIR}/${P}-adjust_var_path.patch"
-	setup-wxwidgets
 	cmake-utils_src_prepare
 	#eapply_user
 	popd || die
 }
 
 src_configure() {
+	setup-wxwidgets
 	#SLIC3R_NO_AUTO=1 perl-module_src_configure
 	local mycmakeargs=(
 		-DSLIC3R_FHS=ON
