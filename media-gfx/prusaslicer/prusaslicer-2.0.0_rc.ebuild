@@ -74,7 +74,7 @@ DEPEND="${RDEPEND}
 	virtual/perl-Test-Simple ) )"
 
 #S="${WORKDIR}/Slic3r-version_${PV}/"
-S="${WORKDIR}/Slic3r-version_2.0.0-rc/"
+S="${WORKDIR}/PrusaSlicer-version_2.0.0-rc/"
 
 src_prepare() {
 	#pushd "${WORKDIR}/Slic3r-version_${PV}" || die
