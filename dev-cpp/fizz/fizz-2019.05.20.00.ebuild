@@ -37,7 +37,7 @@ src_configure() {
 	local mycmakeargs=(
 		-DBUILD_TESTS="$(usex test)"
 		-DBUILD_EXAMPLES="$(usex examples)"
-		-DBUILD_SHARED_LIBS=ON
+		-DBUILD_SHARED_LIBS=OFF
 	)
 
 	cmake-utils_src_configure
