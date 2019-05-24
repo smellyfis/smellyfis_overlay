@@ -7,7 +7,7 @@ inherit cmake-utils
 
 DESCRIPTION="An open-source C++ library developed and used at Facebook"
 HOMEPAGE="https://github.com/facebookincubator/fizz"
-SRC_URI="https://github.com/facebookincubator/fizz/archive/v${PV}.tar.gz"
+SRC_URI="https://github.com/facebookincubator/fizz/archive/v2019.05.20.00.tar.gz"
 KEYWORDS="~amd64"
 
 LICENSE="Apache-2.0"
@@ -26,8 +26,7 @@ DEPEND="dev-libs/double-conversion
 		sys-libs/zlib
 		app-arch/xz-utils
 		app-arch/lzma
-		dev-libs/jemalloc
-		dev-cpp/folly"
+		dev-libs/jemalloc"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${P}/${PN}"
