@@ -24,7 +24,7 @@ S="${WORKDIR}/${P}/${PN}"
 src_configure() {
 	local mycmakeargs=(
 		-DBUILD_TESTS="$(usex test)"
-		-DBUILD_SHARED_LIBS=OFF
+		-DBUILD_SHARED_LIBS=ON
 	)
 
 	cmake-utils_src_configure
