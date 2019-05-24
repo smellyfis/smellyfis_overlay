@@ -10,8 +10,6 @@ HOMEPAGE="https://github.com/facebook/folly"
 SRC_URI="https://github.com/facebook/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 KEYWORDS="~amd64"
 
-CMAKE_MAKEFILE_GENERATOR=emake
-
 LICENSE="Apache-2.0"
 SLOT="0"
 IUSE="test"
@@ -35,7 +33,7 @@ RDEPEND="${DEPEND}"
 src_configure() {
 	local mycmakeargs=(
 		-DBUILD_TESTS="$(usex test)"
-		-DBUILD_SHARED_LIBS=ON
+		-DBUILD_SHARED_LIBS=OFF
 	)
 
 	cmake-utils_src_configure
