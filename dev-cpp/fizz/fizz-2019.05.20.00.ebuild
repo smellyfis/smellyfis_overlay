@@ -1,16 +1,13 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit cmake-utils
 
-MY_PV=${PV%%_p*}
-
 DESCRIPTION="An open-source C++ library developed and used at Facebook"
 HOMEPAGE="https://github.com/facebookincubator/fizz"
-SRC_URI="https://github.com/facebookincubator/${PN}/archive/v${PV}.tar.gz"
-
+SRC_URI="https://github.com/facebookincubator/fizz/archive/v${PV}.tar.gz"
 KEYWORDS="~amd64"
 
 LICENSE="Apache-2.0"
