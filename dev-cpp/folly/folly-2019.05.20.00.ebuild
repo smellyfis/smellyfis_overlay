@@ -19,7 +19,8 @@ KEYWORDS="~amd64"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-IUSE="static-libs debug"
+#IUSE="static-libs debug"
+IUSE=""
 
 DEPEND="dev-libs/double-conversion
 		dev-libs/libevent
@@ -35,7 +36,7 @@ DEPEND="dev-libs/double-conversion
 		dev-libs/jemalloc"
 RDEPEND="${DEPEND}"
 
-S="${WORKDIR}/${P}/${PN}"
+#S="${WORKDIR}/${P}/${PN}"
 
 #PATCHES=( "${FILESDIR}/${PN}-${MY_PV}-really-fix-boost161.diff" )
 #PATCHES=("${FILESDIR}/${P}-unwind_fix.patch")
