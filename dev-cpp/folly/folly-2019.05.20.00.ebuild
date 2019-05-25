@@ -1,7 +1,7 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit cmake-utils
 
@@ -12,7 +12,7 @@ KEYWORDS="~amd64"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-IUSE="test"
+IUSE="test static-libs"
 
 DEPEND="dev-libs/double-conversion
 		dev-libs/libevent
@@ -29,11 +29,12 @@ DEPEND="dev-libs/double-conversion
 RDEPEND="${DEPEND}"
 
 #S="${WORKDIR}/${P}/${PN}"
+PATCHES=( "${FILESDIR}/${PN}_shared_library.patch" )
 
 src_configure() {
 	local mycmakeargs=(
 		-DBUILD_TESTS="$(usex test)"
-		-DBUILD_SHARED_LIBS=ON
+		-DBUILD_SHARED_LIBS="$(usex static-libs OFF ON)"
 	)
 
 	cmake-utils_src_configure

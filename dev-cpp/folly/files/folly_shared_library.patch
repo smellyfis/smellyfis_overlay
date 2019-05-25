@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 525f2394..7aceeb70 100755
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -53,6 +53,7 @@ option(BUILD_SHARED_LIBS
+ # is generally discouraged.
+ mark_as_advanced(BUILD_SHARED_LIBS)
+ set(FOLLY_SUPPORT_SHARED_LIBRARY "${BUILD_SHARED_LIBS}")
++set(CMAKE_POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS})
+ 
+ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+   # Check target architecture
