@@ -13,7 +13,7 @@ KEYWORDS="~amd64"
 LICENSE="Apache-2.0"
 SLOT="0"
 #IUSE="static-libs debug"
-IUSE="test examples static-libs"
+IUSE="test examples +static-libs"
 
 DEPEND="dev-libs/double-conversion
 		dev-libs/libevent
