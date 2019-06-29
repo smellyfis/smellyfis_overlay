@@ -1,14 +1,12 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
 inherit eutils systemd udev
 
 DESCRIPTION="DisplayLink USB Graphics Software"
 HOMEPAGE="http://www.displaylink.com/downloads/ubuntu"
-#SRC_URI="http://www.displaylink.com/downloads/file?id=993 -> ${P}.zip"
-DL_URI="http://www.displaylink.com/downloads/file?id=1057"
 SRC_URI="${P}.zip"
 
 LICENSE="DisplayLink"
@@ -16,20 +14,20 @@ SLOT="0"
 KEYWORDS="~x86 ~amd64"
 IUSE="systemd"
 
-RESTRICT="fetch"
 QA_PREBUILT="/opt/displaylink/DisplayLinkManager"
+RESTRICT="fetch"
 
 DEPEND="app-admin/chrpath"
 RDEPEND=">=sys-devel/gcc-4.8.3
-	>=x11-drivers/evdi-1.3
+	=x11-drivers/evdi-1.6*
 	virtual/libusb:1
 	|| ( x11-drivers/xf86-video-modesetting >=x11-base/xorg-server-1.17.0 )
 	!systemd? ( sys-power/pm-utils )"
 
-
 pkg_nofetch() {
-	einfo "please go to ${DL_URI}"
-	einfo "copy the downloaded file to Your DISTDIR/${P}.zip"
+	einfo "Please download DisplayLink USB Graphics Software for Ubuntu 4.1.zip from"
+	einfo "http://www.displaylink.com/downloads/ubuntu"
+	einfo "and rename it to ${P}.zip"
 }
 
 src_unpack() {
@@ -81,7 +79,6 @@ src_install() {
 
 pkg_postinst() {
 	einfo "The DisplayLinkManager Init is now called dlm"
-	einfo "and is triggered by udev"
 	einfo ""
 	einfo "You should be able to use xrandr as follows:"
 	einfo "xrandr --setprovideroutputsource 1 0"
