@@ -74,11 +74,11 @@ DEPEND="${RDEPEND}
 	virtual/perl-Test-Simple ) )"
 
 #S="${WORKDIR}/Slic3r-version_${PV}/"
-S="${WORKDIR}/PrusaSlicer-version_2.0.0-alpha0/"
+S="${WORKDIR}/PrusaSlicer-version_2.1.0-alpha0/"
 
 src_prepare() {
 	#pushd "${WORKDIR}/Slic3r-version_${PV}" || die
-	pushd "${WORKDIR}/PrusaSlicer-version_2.0.0-alpha0" || die
+	pushd "${WORKDIR}/PrusaSlicer-version_2.1.0-alpha0" || die
 	#eapply "${FILESDIR}/${P}-add_install.patch"
 	#eapply "${FILESDIR}/${P}-fix_disappearing_tabs.patch"
 	#eapply "${FILESDIR}/${P}-cmake_paths.patch"
