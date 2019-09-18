@@ -10,7 +10,7 @@ WX_GTK_VER="3.0-gtk3"
 DESCRIPTION="A mesh slicer to generate G-code for fused-filament-fabrication (3D printers)"
 HOMEPAGE="http://slic3r.org"
 #SRC_URI="https://github.com/prusa3d/slic3r/archive/version_${PV}.tar.gz -> ${P}.tar.gz"
-SRC_URI="https://github.com/prusa3d/PrusaSlicer/archive/version_2.1.0-alpha0.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/prusa3d/PrusaSlicer/archive/version_2.1.0.tar.gz -> ${P}.tar.gz"
 MASTERS=gentoo
 
 LICENSE="AGPL-3 CC-BY-3.0"
@@ -74,11 +74,11 @@ DEPEND="${RDEPEND}
 	virtual/perl-Test-Simple ) )"
 
 #S="${WORKDIR}/Slic3r-version_${PV}/"
-S="${WORKDIR}/PrusaSlicer-version_2.1.0-alpha0/"
+S="${WORKDIR}/PrusaSlicer-version_2.1.0/"
 
 src_prepare() {
 	#pushd "${WORKDIR}/Slic3r-version_${PV}" || die
-	pushd "${WORKDIR}/PrusaSlicer-version_2.1.0-alpha0" || die
+	pushd "${WORKDIR}/PrusaSlicer-version_2.1.0" || die
 	#eapply "${FILESDIR}/${P}-add_install.patch"
 	#eapply "${FILESDIR}/${P}-fix_disappearing_tabs.patch"
 	#eapply "${FILESDIR}/${P}-cmake_paths.patch"
