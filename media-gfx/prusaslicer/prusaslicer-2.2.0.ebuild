@@ -19,7 +19,8 @@ KEYWORDS="~amd64 ~x86"
 IUSE="+gui perl test static"
 
 RDEPEND=">=dev-libs/boost-1.55[threads]
-	media-libs/qhull
+	media-libs/qhull[static-libs]
+	>=sci-mathematics/cgal-5.0.2
 	perl? ( !=dev-lang/perl-5.16*
 		dev-perl/Class-XSAccessor
 		>=dev-perl/Encode-Locale-1.50.0
