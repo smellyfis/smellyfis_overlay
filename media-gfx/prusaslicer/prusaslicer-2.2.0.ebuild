@@ -53,6 +53,7 @@ RDEPEND=">=dev-libs/boost-1.55[threads]
 		virtual/perl-Math-Complex
 		>=virtual/perl-Socket-2.16.0
 		x11-libs/libXmu
+		media-gfx/openvdb
 		) )
 	gui? ( x11-libs/wxGTK[opengl,webkit] )"
 DEPEND="${RDEPEND}
