@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -22,7 +22,7 @@ RDEPEND=">=sys-devel/gcc-4.8.3
 	=x11-drivers/evdi-1.6*
 	virtual/libusb:1
 	|| ( x11-drivers/xf86-video-modesetting >=x11-base/xorg-server-1.17.0 )
-	!systemd? ( sys-power/pm-utils )"
+	!systemd? ( sys-auth/elogind )"
 
 pkg_nofetch() {
 	einfo "Please download DisplayLink USB Graphics Software for Ubuntu 4.1.zip from"
