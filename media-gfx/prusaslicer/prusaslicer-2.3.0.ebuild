@@ -68,7 +68,6 @@ src_configure() {
 	cmake_src_configure
 }
 
-
 src_install() {
 	cmake_src_install
 
