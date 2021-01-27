@@ -1,7 +1,7 @@
 <repositories encoding="unicode" version="1.1">
   <repo priority="50" quality="experimental">
     <name>smellyfis</name>
-    <description>collection of programs that make my life easier</description>
+    <description>Collection of programs that make my life easier. Sometimes Because I need a new version, Issue a Bug fix, or New Package.</description>
     <owner>
       <email>dylan.thies@gmail.com</email>
       <name>Dylan "smellyfis" Thies</name>
