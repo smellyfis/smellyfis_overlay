@@ -1,0 +1,320 @@
+diff --git a/src/libslic3r/AppConfig.cpp b/src/libslic3r/AppConfig.cpp
+index 9504b13bb..e1b443369 100644
+--- a/src/libslic3r/AppConfig.cpp
++++ b/src/libslic3r/AppConfig.cpp
+@@ -16,6 +16,7 @@
+ #include <boost/property_tree/ptree_fwd.hpp>
+ #include <boost/algorithm/string/predicate.hpp>
+ #include <boost/format/format_fwd.hpp>
++#include <boost/locale/generator.hpp>
+ 
+ //#include <wx/string.h>
+ //#include "I18N.hpp"
+diff --git a/src/libslic3r/Fill/FillRectilinear.cpp b/src/libslic3r/Fill/FillRectilinear.cpp
+index e47e121f8..1cb3eeb6f 100644
+--- a/src/libslic3r/Fill/FillRectilinear.cpp
++++ b/src/libslic3r/Fill/FillRectilinear.cpp
+@@ -30,7 +30,7 @@
+     #undef NDEBUG
+     #include "SVG.hpp"
+ #endif
+-
++#include "SVG.hpp"
+ #if defined(SLIC3R_DEBUG) || defined(INFILL_DEBUG_OUTPUT)
+     #include "SVG.hpp"
+ #endif
+diff --git a/src/libslic3r/Format/CWS.cpp b/src/libslic3r/Format/CWS.cpp
+index b28a47f50..ace76bca6 100644
+--- a/src/libslic3r/Format/CWS.cpp
++++ b/src/libslic3r/Format/CWS.cpp
+@@ -1,6 +1,8 @@
+ #include "libslic3r/Format/CWS.hpp"
+ #include "libslic3r/PrintConfig.hpp"
+ #include "libslic3r/Time.hpp"
++#include <boost/filesystem.hpp>
++#include <boost/log/trivial.hpp>
+ 
+ namespace Slic3r {
+ 
+diff --git a/src/libslic3r/Optimize/Optimizer.hpp b/src/libslic3r/Optimize/Optimizer.hpp
+index 05191eba2..8ae55c61c 100644
+--- a/src/libslic3r/Optimize/Optimizer.hpp
++++ b/src/libslic3r/Optimize/Optimizer.hpp
+@@ -8,6 +8,7 @@
+ #include <functional>
+ #include <limits>
+ #include <cassert>
++#include <optional>
+ 
+ namespace Slic3r { namespace opt {
+ 
+diff --git a/src/libslic3r/SVG.cpp b/src/libslic3r/SVG.cpp
+index a96f6dd9d..d041fe252 100644
+--- a/src/libslic3r/SVG.cpp
++++ b/src/libslic3r/SVG.cpp
+@@ -362,4 +362,52 @@ void SVG::export_expolygons(const char *path, const std::vector<std::pair<Slic3r
+     svg.Close();
+ }
+ 
++Point export_surface_type_legend_to_svg_box_size()
++{
++    return Point(scale_(1.+10.*8.), scale_(3.)); 
++}
++
++bool export_to_svg(const char *path, const Surfaces &surfaces, const float transparency)
++{
++    BoundingBox bbox;
++    for (Surfaces::const_iterator surface = surfaces.begin(); surface != surfaces.end(); ++surface)
++        bbox.merge(get_extents(surface->expolygon));
++
++    SVG svg(path, bbox);
++    for (Surfaces::const_iterator surface = surfaces.begin(); surface != surfaces.end(); ++surface)
++        svg.draw(surface->expolygon, surface_type_to_color_name(surface->surface_type), transparency);
++    svg.Close();
++    return true;
++}
++
++void export_surface_type_legend_to_svg(SVG &svg, const Point &pos)
++{
++    // 1st row
++    coord_t pos_x0 = pos(0) + scale_(1.);
++    coord_t pos_x = pos_x0;
++    coord_t pos_y = pos(1) + scale_(1.5);
++    coord_t step_x = scale_(10.);
++    svg.draw_legend(Point(pos_x, pos_y), "perimeter"      , surface_type_to_color_name(stPosPerimeter));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "top"            , surface_type_to_color_name(stPosTop));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "bottom"         , surface_type_to_color_name(stPosBottom));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "bottom bridge"  , surface_type_to_color_name(stPosBottom | stModBridge));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "invalid"        , surface_type_to_color_name(SurfaceType(-1)));
++    // 2nd row
++    pos_x = pos_x0;
++    pos_y = pos(1)+scale_(2.8);
++    svg.draw_legend(Point(pos_x, pos_y), "internal"       , surface_type_to_color_name(stPosInternal | stDensSparse));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "internal solid" , surface_type_to_color_name(stPosInternal | stDensSolid));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "internal bridge", surface_type_to_color_name(stPosInternal | stDensSolid | stModBridge));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "internal over bridge", surface_type_to_color_name(stPosInternal| stDensSolid | stModOverBridge));
++    pos_x += step_x;
++    svg.draw_legend(Point(pos_x, pos_y), "internal void"  , surface_type_to_color_name(stPosInternal | stDensVoid));
++}
++
+ }
+diff --git a/src/libslic3r/SVG.hpp b/src/libslic3r/SVG.hpp
+index 29ecaa1b2..185ad3fb4 100644
+--- a/src/libslic3r/SVG.hpp
++++ b/src/libslic3r/SVG.hpp
+@@ -137,6 +137,9 @@ private:
+     float           to_svg_y(float x) const throw() { return flipY ? this->height - to_svg_coord(x) : to_svg_coord(x); }
+ };
+ 
++extern void export_surface_type_legend_to_svg(SVG &svg, const Point &pos);
++extern Point export_surface_type_legend_to_svg_box_size();
++extern bool export_to_svg(const char *path, const Surfaces &surfaces, const float transparency = 1.f);
+ }
+ 
+ #endif
+diff --git a/src/libslic3r/Surface.cpp b/src/libslic3r/Surface.cpp
+index e36d340c2..e8688de7d 100644
+--- a/src/libslic3r/Surface.cpp
++++ b/src/libslic3r/Surface.cpp
+@@ -95,52 +95,4 @@ const char* surface_type_to_color_name(const SurfaceType surface_type)
+     return "rgb(64,64,64)"; //dark gray
+ }
+ 
+-Point export_surface_type_legend_to_svg_box_size()
+-{
+-    return Point(scale_(1.+10.*8.), scale_(3.)); 
+-}
+-
+-void export_surface_type_legend_to_svg(SVG &svg, const Point &pos)
+-{
+-    // 1st row
+-    coord_t pos_x0 = pos(0) + scale_(1.);
+-    coord_t pos_x = pos_x0;
+-    coord_t pos_y = pos(1) + scale_(1.5);
+-    coord_t step_x = scale_(10.);
+-    svg.draw_legend(Point(pos_x, pos_y), "perimeter"      , surface_type_to_color_name(stPosPerimeter));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "top"            , surface_type_to_color_name(stPosTop));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "bottom"         , surface_type_to_color_name(stPosBottom));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "bottom bridge"  , surface_type_to_color_name(stPosBottom | stModBridge));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "invalid"        , surface_type_to_color_name(SurfaceType(-1)));
+-    // 2nd row
+-    pos_x = pos_x0;
+-    pos_y = pos(1)+scale_(2.8);
+-    svg.draw_legend(Point(pos_x, pos_y), "internal"       , surface_type_to_color_name(stPosInternal | stDensSparse));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "internal solid" , surface_type_to_color_name(stPosInternal | stDensSolid));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "internal bridge", surface_type_to_color_name(stPosInternal | stDensSolid | stModBridge));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "internal over bridge", surface_type_to_color_name(stPosInternal| stDensSolid | stModOverBridge));
+-    pos_x += step_x;
+-    svg.draw_legend(Point(pos_x, pos_y), "internal void"  , surface_type_to_color_name(stPosInternal | stDensVoid));
+-}
+-
+-bool export_to_svg(const char *path, const Surfaces &surfaces, const float transparency)
+-{
+-    BoundingBox bbox;
+-    for (Surfaces::const_iterator surface = surfaces.begin(); surface != surfaces.end(); ++surface)
+-        bbox.merge(get_extents(surface->expolygon));
+-
+-    SVG svg(path, bbox);
+-    for (Surfaces::const_iterator surface = surfaces.begin(); surface != surfaces.end(); ++surface)
+-        svg.draw(surface->expolygon, surface_type_to_color_name(surface->surface_type), transparency);
+-    svg.Close();
+-    return true;
+-}
+-
+ }
+diff --git a/src/libslic3r/Surface.hpp b/src/libslic3r/Surface.hpp
+index e7e4871be..061b19e5a 100644
+--- a/src/libslic3r/Surface.hpp
++++ b/src/libslic3r/Surface.hpp
+@@ -337,12 +337,7 @@ inline bool surfaces_could_merge(const Surface &s1, const Surface &s2)
+         s1.bridge_angle      == s2.bridge_angle;
+ }
+ 
+-class SVG;
+-
+ extern const char* surface_type_to_color_name(const SurfaceType surface_type);
+-extern void export_surface_type_legend_to_svg(SVG &svg, const Point &pos);
+-extern Point export_surface_type_legend_to_svg_box_size();
+-extern bool export_to_svg(const char *path, const Surfaces &surfaces, const float transparency = 1.f);
+ 
+ }
+ 
+diff --git a/src/libslic3r/miniz_extension.hpp b/src/libslic3r/miniz_extension.hpp
+index 006226bf2..3662ce493 100644
+--- a/src/libslic3r/miniz_extension.hpp
++++ b/src/libslic3r/miniz_extension.hpp
+@@ -3,6 +3,7 @@
+ 
+ #include <string>
+ #include <miniz.h>
++#include <miniz_zip.h>
+ 
+ namespace Slic3r {
+ 
+diff --git a/src/slic3r/GUI/3DBed.cpp b/src/slic3r/GUI/3DBed.cpp
+index 4dcea595e..fa3c0ebb0 100644
+--- a/src/slic3r/GUI/3DBed.cpp
++++ b/src/slic3r/GUI/3DBed.cpp
+@@ -17,6 +17,11 @@
+ #include <boost/algorithm/string/predicate.hpp>
+ #include <boost/filesystem/operations.hpp>
+ #include <boost/log/trivial.hpp>
++#include <boost/property_tree/ptree.hpp>
++#include <boost/property_tree//ini_parser.hpp>
++#include <boost/locale/generator.hpp>
++#include <boost/nowide/fstream.hpp>
++#include <boost/nowide/iostream.hpp>
+ 
+ static const float GROUND_Z = -0.02f;
+ 
+diff --git a/src/slic3r/GUI/CalibrationAbstractDialog.cpp b/src/slic3r/GUI/CalibrationAbstractDialog.cpp
+index 4b72513f6..0908418ce 100644
+--- a/src/slic3r/GUI/CalibrationAbstractDialog.cpp
++++ b/src/slic3r/GUI/CalibrationAbstractDialog.cpp
+@@ -8,6 +8,7 @@
+ #include <wx/scrolwin.h>
+ #include <wx/display.h>
+ #include <wx/file.h>
++#include <boost/filesystem.hpp>
+ 
+ #if ENABLE_SCROLLABLE
+ static wxSize get_screen_size(wxWindow* window)
+diff --git a/src/slic3r/GUI/Field.hpp b/src/slic3r/GUI/Field.hpp
+index bd38dc649..30b002804 100644
+--- a/src/slic3r/GUI/Field.hpp
++++ b/src/slic3r/GUI/Field.hpp
+@@ -10,6 +10,7 @@
+ #include <cstdint>
+ #include <functional>
+ #include <boost/any.hpp>
++#include <regex>
+ 
+ #include <wx/spinctrl.h>
+ #include <wx/bmpcbox.h>
+diff --git a/src/slic3r/GUI/FreeCADDialog.cpp b/src/slic3r/GUI/FreeCADDialog.cpp
+index 754a78e3b..53950b809 100644
+--- a/src/slic3r/GUI/FreeCADDialog.cpp
++++ b/src/slic3r/GUI/FreeCADDialog.cpp
+@@ -26,6 +26,7 @@
+ #include <wx/file.h>
+ #include <wx/html/htmlwin.h>
+ #include <wx/textctrl.h>
++#include <wx/stc/stc.h>
+ #include "wxExtensions.hpp"
+ 
+ #include <boost/asio.hpp>
+diff --git a/src/slic3r/GUI/GUI_ObjectList.cpp b/src/slic3r/GUI/GUI_ObjectList.cpp
+index 2559e6f87..c561b5d78 100644
+--- a/src/slic3r/GUI/GUI_ObjectList.cpp
++++ b/src/slic3r/GUI/GUI_ObjectList.cpp
+@@ -15,6 +15,7 @@
+ #include "Selection.hpp"
+ 
+ #include <boost/algorithm/string.hpp>
++#include <boost/log/trivial.hpp>
+ #include "slic3r/Utils/FixModelByWin10.hpp"
+ 
+ #ifdef __WXMSW__
+diff --git a/src/slic3r/GUI/NotificationManager.hpp b/src/slic3r/GUI/NotificationManager.hpp
+index de7204038..365766167 100644
+--- a/src/slic3r/GUI/NotificationManager.hpp
++++ b/src/slic3r/GUI/NotificationManager.hpp
+@@ -4,6 +4,7 @@
+ #include "Event.hpp"
+ #include "I18N.hpp"
+ 
++#include "libslic3r/libslic3r.h"
+ #include <libslic3r/ObjectID.hpp>
+ #include <libslic3r/Technologies.hpp>
+ 
+diff --git a/src/slic3r/GUI/Preferences.cpp b/src/slic3r/GUI/Preferences.cpp
+index 258eaf0ee..c4b14379d 100644
+--- a/src/slic3r/GUI/Preferences.cpp
++++ b/src/slic3r/GUI/Preferences.cpp
+@@ -5,6 +5,7 @@
+ #include "I18N.hpp"
+ #include "libslic3r/AppConfig.hpp"
+ #include <wx/notebook.h>
++#include <boost/filesystem.hpp>
+ 
+ namespace Slic3r {
+ namespace GUI {
+diff --git a/src/slic3r/GUI/Tab.cpp b/src/slic3r/GUI/Tab.cpp
+index 32ac2a30c..290043107 100644
+--- a/src/slic3r/GUI/Tab.cpp
++++ b/src/slic3r/GUI/Tab.cpp
+@@ -26,6 +26,7 @@
+ #include <wx/imaglist.h>
+ #include <wx/settings.h>
+ #include <wx/filedlg.h>
++#include <wx/collpane.h>
+ 
+ #include <boost/algorithm/string/split.hpp>
+ #include <boost/algorithm/string/predicate.hpp>
+diff --git a/src/slic3r/Utils/PresetUpdater.cpp b/src/slic3r/Utils/PresetUpdater.cpp
+index 37c32da16..31e53b7aa 100644
+--- a/src/slic3r/Utils/PresetUpdater.cpp
++++ b/src/slic3r/Utils/PresetUpdater.cpp
+@@ -12,6 +12,8 @@
+ #include <boost/filesystem/fstream.hpp>
+ #include <boost/lexical_cast.hpp>
+ #include <boost/log/trivial.hpp>
++#include <boost/property_tree/ptree.hpp>
++#include <boost/property_tree/json_parser.hpp>
+ 
+ #include <wx/app.h>
+ #include <wx/msgdlg.h>
