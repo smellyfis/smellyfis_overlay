@@ -961,18 +961,6 @@ index bfbabd06b..512b7755e 100644
  };
  
  template<typename PrintStepEnum, const size_t COUNT>
-diff --git a/src/libslic3r/PrintObject.cpp b/src/libslic3r/PrintObject.cpp
-index ed17676e0..12d61651a 100644
---- a/src/libslic3r/PrintObject.cpp
-+++ b/src/libslic3r/PrintObject.cpp
-@@ -19,7 +19,6 @@
- #include <float.h>
- 
- #include <tbb/parallel_for.h>
--#include <tbb/atomic.h>
- 
- #include <Shiny/Shiny.h>
- 
 diff --git a/src/libslic3r/SLA/Concurrency.hpp b/src/libslic3r/SLA/Concurrency.hpp
 index 300024c76..6b609da00 100644
 --- a/src/libslic3r/SLA/Concurrency.hpp
@@ -1107,9 +1095,9 @@ index d203acb90..51dec618e 100644
  	std::mutex				cv_m;
 -	auto					master_thread_id = tbb::this_tbb_thread::get_id();
 +	auto					master_thread_id = std::this_thread::get_id();
+ 	auto					now = std::chrono::system_clock::now();
      tbb::parallel_for(
          tbb::blocked_range<size_t>(0, nthreads, 1),
-         [&nthreads_running, nthreads, &master_thread_id, &cv, &cv_m](const tbb::blocked_range<size_t> &range) {
 @@ -226,7 +226,7 @@ void name_tbb_thread_pool_threads()
  				std::unique_lock<std::mutex> lk(cv_m);
  			    cv.wait(lk, [&nthreads_running, nthreads]{return nthreads_running == nthreads;});
