@@ -57,7 +57,7 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${MY_PN}-${PV}"
 
 PATCHES=(
-	"${FILESDIR}/${PN}-2.3.56.8-general.patch"
+	"${FILESDIR}/${PN}-2.3.57.9-general.patch"
 )
 
 src_configure() {
