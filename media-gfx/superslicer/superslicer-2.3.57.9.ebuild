@@ -58,6 +58,7 @@ S="${WORKDIR}/${MY_PN}-${PV}"
 
 PATCHES=(
 	"${FILESDIR}/${PN}-2.3.57.9-general.patch"
+	"${FILESDIR}/prusa-slicer-tbb-2021.patch"
 )
 
 src_configure() {
