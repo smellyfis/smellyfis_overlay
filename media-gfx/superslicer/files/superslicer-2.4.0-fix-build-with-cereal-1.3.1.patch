@@ -18,8 +18,8 @@ https://github.com/prusa3d/PrusaSlicer/commit/0ffcfd8393457fd035576436752267c9a1
      set_target_properties(Slic3r PROPERTIES OUTPUT_NAME "${SLIC3R_APP_CMD}")
  endif ()
  
--target_link_libraries(PrusaSlicer libslic3r cereal)
-+target_link_libraries(PrusaSlicer libslic3r cereal::cereal)
+-target_link_libraries(slic3r libslic3r cereal)
++target_link_libraries(slic3r libslic3r cereal::cereal)
  if (APPLE)
  #    add_compile_options(-stdlib=libc++)
  #    add_definitions(-DBOOST_THREAD_DONT_USE_CHRONO -DBOOST_NO_CXX11_RVALUE_REFERENCES -DBOOST_THREAD_USES_MOVE)
