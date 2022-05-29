@@ -32,7 +32,7 @@ RDEPEND="
 	>=dev-libs/miniz-2.1.0-r2
 	dev-libs/mpfr:=
 	>=media-gfx/openvdb-5.0.0
-	media-libs/ilmbase:=
+	media-libs/imath:=
 	media-libs/libpng:0=
 	media-libs/qhull:=
 	sci-libs/libigl
